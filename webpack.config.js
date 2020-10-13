@@ -1,6 +1,4 @@
 const path = require("path");
-// https://www.npmjs.com/package/mini-css-extract-plugin
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 // https://www.npmjs.com/package/html-webpack-plugin
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
@@ -20,19 +18,10 @@ module.exports = {
 
   module: {
     rules: [
-      // 处理js|jsx资源
-      {
-        test: /\.(jsx|js)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-        },
-      },
       // 处理less资源
       {
         test: /\.less$/,
         use: [
-          MiniCssExtractPlugin.loader,
           "style-loader",
           "css-loader",
           "less-loader",
@@ -41,15 +30,29 @@ module.exports = {
       // 处理css资源
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "style-loader", "css-loader"],
+        use: [
+          "style-loader",
+          "css-loader"
+        ]
+      },
+      //  处理js和jsx 文件
+      {
+        test: /\.jsx?/,
+        include: [
+          // 指定哪些路径下的文件需要经过 loader 处理
+          path.resolve(__dirname, 'src'),
+        ],
+        use: {
+          loader: 'babel-loader', // 指定使用的 loader
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        },
       },
     ],
   },
 
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: "css/[id].style.css",
-    }),
     new HtmlWebpackPlugin({
       template: "./src/index.html",
     }),
