@@ -1,5 +1,5 @@
 import React from "react";
-import './app.less'
+import './home.less'
 
 export default () => {
   return (
